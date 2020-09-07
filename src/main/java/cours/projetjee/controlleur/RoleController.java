@@ -7,9 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
-@Controller
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
 public class RoleController {
     @Autowired
     private RoleRepository roleRepository ;

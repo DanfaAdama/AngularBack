@@ -11,8 +11,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin
-@Controller
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
 @RequestMapping("/ressources/custumers")
 public class CustumerController {
     @Autowired

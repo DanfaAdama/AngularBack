@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/ressources/factures")
@@ -20,7 +22,12 @@ public class FactureController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addFacture(@RequestBody Facture facture) {
-        factureRepository.save(facture);
+        if(factureRepository.getLastInsertedNumeroIncremented(facture.getCommande().getId()) != null){
+            int i=Integer.parseInt(factureRepository.getLastInsertedNumeroIncremented(facture.getCommande().getId())) + 1;
+            facture.setNumero(String.valueOf(i));
+        }else {
+            facture.setNumero("1");
+        }        factureRepository.save(facture);
         return ResponseEntity.ok(facture);
     }
 
@@ -39,6 +46,10 @@ public class FactureController {
     public ResponseEntity<?> listeFactures() {
         return ResponseEntity.ok(factureRepository
                 .findAll());
+    }
+    @GetMapping(value = "/facture/{id}")
+    public Optional<Facture> getOne(@PathVariable Long id){
+        return  factureRepository.findById(id);
     }
 
 

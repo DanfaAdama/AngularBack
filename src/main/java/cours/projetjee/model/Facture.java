@@ -1,5 +1,8 @@
 package cours.projetjee.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -18,8 +21,9 @@ public class Facture implements Serializable {
 
     private LocalDate date;
 
-    @ManyToOne
-    @JoinColumn(name = "commande_id")
+    @ManyToOne(cascade =CascadeType.MERGE )
+    @JsonBackReference
+    @JoinColumn(name = "commande_id", nullable = false)
     private Commande commande;
 
     @ManyToOne
@@ -58,7 +62,7 @@ public class Facture implements Serializable {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-
+   // @JsonIgnore
     public Commande getCommande() {
         return commande;
     }

@@ -15,7 +15,9 @@
         <th style="text-align:left;">  <img src="https://i.ibb.co/7WhsW51/LOGO-DANFA2.png" alt="LOGO-DANFA2" border="0" style="height: 170px;width: 180px;"  /> </th>
 
 <!--        <th style="text-align:left;"><img src="https://i.ibb.co/7WhsW51/LOGO-DANFA2.png" alt="bachana tours"/></th>-->
-        <th style="text-align:right;font-weight:400;">Date:05th Apr, 2017</th>
+
+        <th style="text-align:right;font-weight:400; ">Date: <span th:text="${TodayDate}"></span></th><br/>
+        <th style="text-align:right;font-weight:400; padding-top: 56px;" th:if="${TypePaiement=='Complet'}"><span style="margin-left: -158px;">Payement complet</span></th>
     </tr>
     </thead>
     <tbody>
@@ -34,13 +36,13 @@
     </tr>
     <tr>
         <td style="width:50%;padding:20px;vertical-align:top">
-            <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px">Nom  Prénom</span> Palash Basak</p>
-            <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Téléphone</span>77 145 22 33</p>
-            <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Email</span> adanfa@yopmail.com</p>
+            <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px">Nom  Prénom:  </span> <span th:text="${commande.getUser().getName()+'  '+commande.getUser().getPrenom()}"></span></p>
+            <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Téléphone:  </span><span th:text="${commande.getUser().getTel()}"></span></p>
+            <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Email:  </span> <span th:text="${commande.getUser().getEmail()}"></span></p>
         </td>
         <td style="width:50%;padding:20px;vertical-align:top">
-            <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Adresse</span> Khudiram Pally, Malbazar, West Bengal, India, 735221</p>
-            <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Sexe.</span> 2556-1259-9842</p>
+            <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Adresse: </span> <span th:text="${commande.getUser().getAdresse()}"></span></p>
+            <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Sexe:  </span> <span th:text="${commande.getUser().getSexe()}"></span></p>
         </td>
     </tr>
     <tr>
@@ -55,17 +57,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Audits et rapports mensuels</td>
-                    <td>1</td>
-                    <td>Jour</td>
-                    <td class="text-right">500,00€</td>
-                </tr>
-                <tr>
-                    <td>Génération des rapports d'activité</td>
-                    <td>4</td>
-                    <td>Rapport</td>
-                    <td class="text-right">800,00€</td>
+                <tr  th:each="f:${details_commandeList}">
+                    <td th:text="${f.getProduit().getLibelle()}"></td>
+                    <td th:text="${f.getProduit().getCategorie().getLibelle()}"></td>
+                    <td th:text="${f.getQuantite()}"></td>
+                    <td th:text="${f.getProduit().getPrixNormal()}"  class="text-right">FCFA</td>
                 </tr>
                 </tbody>
             </table>
@@ -77,10 +73,10 @@
     <tr>
         <td colspan="2" style="padding:15px;">
             <p style="font-size:14px;margin:0;padding:10px;border:solid 1px #ddd;font-weight:bold;">
-                <span style="display:block;font-size:13px;font-weight:300;">Total HT</span> Rs. 3500 <b style="font-size:12px;font-weight:normal;"> /person/day</b>
+                <span style="display:block;font-size:13px;font-weight:300;">Total HT</span> <span th:text="${montant}"></span> <b style="font-size:12px;font-weight:normal;"> FCFA</b>
             </p>
-            <p style="font-size:14px;margin:0;padding:10px;border:solid 1px #ddd;font-weight:bold;"><span style="display:block;font-size:13px;font-weight:normal;">TVA 18% </span> Rs. 2000 <b style="font-size:12px;font-weight:300;"> /person/day</b></p>
-            <p style="font-size:14px;margin:0;padding:10px;border:solid 1px #ddd;font-weight:bold;"><span style="display:block;font-size:13px;font-weight:normal;">Total TTC</span> Rs. 800 <b style="font-size:12px;font-weight:300;"> /person/day</b></p>
+            <p style="font-size:14px;margin:0;padding:10px;border:solid 1px #ddd;font-weight:bold;"><span style="display:block;font-size:13px;font-weight:normal;">Avance </span> <span th:text="${avance}"></span> <b style="font-size:12px;font-weight:300;"> FCFA</b></p>
+            <p style="font-size:14px;margin:0;padding:10px;border:solid 1px #ddd;font-weight:bold;"><span style="display:block;font-size:13px;font-weight:normal;">Montant net a payé</span> <span th:text="${net}"></span> <b style="font-size:12px;font-weight:300;">CFCA</b></p>
 
         </td>
     </tr>

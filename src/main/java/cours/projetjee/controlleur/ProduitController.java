@@ -19,8 +19,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin
-@Controller
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
 @RequestMapping("/ressources/produits")
 public class ProduitController {
     @Autowired

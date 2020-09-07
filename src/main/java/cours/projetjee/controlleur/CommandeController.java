@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.*;
 
-@CrossOrigin
-@Controller
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
 @RequestMapping("/ressources/commandes")
 public class CommandeController {
     @Autowired
@@ -54,18 +54,41 @@ public class CommandeController {
         }
 
     }
-
-
     @PutMapping("/update")
     public @ResponseBody
     Commande update(@RequestBody Commande commande) {
         return commandeRepository.save(commande);
     }
 
+    @GetMapping(value ="/UpdateAvanceCommande/{id}/{Newavance}")
+    public int updateAvanceCommande(@PathVariable Long id, @PathVariable Float Newavance)
+    {
+        return  commandeRepository.UpdateCommandeAvance(id,Newavance);
+    }
+    @GetMapping(value = "/get/{id}")
+    public Optional<Commande> getOne(@PathVariable Long id){
+        return  commandeRepository.findById(id);
+    }
+
+
+
     @GetMapping("/liste")
     public ResponseEntity<?> listeCommande() {
         return ResponseEntity.ok(commandeRepository
                 .findAll());
     }
+
+    @GetMapping("/last/{clientId}")
+    public
+     Optional<Commande> getLast(@PathVariable("clientId") Long clientId){
+        return commandeRepository.getCommandeByUserId(clientId);
+    }
+
+    @GetMapping(value ="/AllCommandes/{clientId}")
+    public List<Commande> getClientAllCommandes(@PathVariable Long clientId)
+    {
+        return  commandeRepository.getCommandesByClient(clientId);
+    }
+
 
 }
