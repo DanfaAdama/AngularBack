@@ -1,5 +1,7 @@
 package cours.projetjee.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -43,6 +45,7 @@ public class Paiement implements Serializable {
         this.typePaiement = typePaiement;
     }
 
+    @JsonIgnore
     public List<Facture> getFactures() {
         return factures;
     }

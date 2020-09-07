@@ -5,6 +5,7 @@ import cours.projetjee.dao.DetailCommandeRepository;
 import cours.projetjee.dao.ProduitRepository;
 import cours.projetjee.dao.StockRepository;
 import cours.projetjee.model.DetailCommande;
+import cours.projetjee.model.Produit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +39,14 @@ public class DetailCommandeController {
 
     @PostMapping(value = "/add")
     public DetailCommande save(@RequestBody DetailCommande dc){
-    stockRepository.reduceQteStockPoduit((long) dc.getProduit().getId(),(int) dc.getQuantite());
-    produitRepository.reduceQtePoduit(dc.getProduit().getId(),dc.getQuantite());
+        int qte;
+    stockRepository.reduceQteStockPoduit( dc.getProduit().getId(), dc.getQuantite());
+        Produit p =dc.getProduit();
+        qte= p.getQuantite() - dc.getQuantite();
+        p.setQuantite(qte);
+        dc.setProduit(p);
+        produitRepository.save(p);
+//    produitRepository.reduceQtePoduit(dc.getProduit().getId(),dc.getQuantite());
         return  detailCommandeRepository.save(dc);
     }
 

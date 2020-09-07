@@ -1,8 +1,10 @@
 package cours.projetjee.controlleur;
 import cours.projetjee.dao.CommandeRepository;
+import cours.projetjee.dao.FactureRepository;
 import cours.projetjee.dao.ProduitRepository;
 import cours.projetjee.model.Commande;
 import cours.projetjee.model.DetailCommande;
+import cours.projetjee.model.Facture;
 import org.json.JSONObject;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
@@ -12,6 +14,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -41,7 +44,8 @@ public class PdfController {
 
     @Autowired
     private CommandeRepository commandeRepository;
-
+        @Autowired
+        private FactureRepository factureRepository;
     @Autowired
     private JavaMailSender javaMailSender;
 
@@ -53,18 +57,22 @@ public class PdfController {
         long good=num;
         Context context = new Context();
         List<DetailCommande> details_commandeList = new ArrayList<>();
-        Commande commande = commandeRepository.getCommandeById(id);
-        for (DetailCommande details:commande.getDetails_commandes()) {
+        //Commande commande =commandeRepository.getCommandeById(id);
+        Facture facture =factureRepository.getFactureById(id);
+        for (DetailCommande details:facture.getCommande().getDetails_commandes()) {
             details_commandeList.add(details);
         }
         LocalDate date = LocalDate.now();
 
-        Double montantNet = commande.getMontant()  - commande.getAvance();
+        float montantNet = (float) (facture.getCommande().getMontant() - facture.getCommande().getAvance());
         context.setVariable("TodayDate",date);
-        context.setVariable("commande",commande);
-        context.setVariable("montant",formatPrice(commande.getMontant()));
+        context.setVariable("TypePaiement",facture.getPaiement().getTypePaiement());
+        context.setVariable("Numero",facture.getNumero());
+        context.setVariable("commande",facture.getCommande());
+        context.setVariable("montant",formatPrice(facture.getCommande().getMontant()));
         context.setVariable("net",formatPrice(montantNet));
-        context.setVariable("avance",formatPrice(commande.getAvance()));
+        context.setVariable("totalAvance",formatPrice(facture.getCommande().getAvance()));
+        context.setVariable("avance",formatPrice(facture.getPaiement().getMontant()));
         context.setVariable("details_commandeList",details_commandeList);
 
         String htmlContentToRender = templateEngine.process("facture", context);
@@ -84,7 +92,7 @@ public class PdfController {
 
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            helper.setTo(commande.getUser().getEmail());
+            helper.setTo(facture.getCommande().getUser().getEmail());
             helper.setSubject("Facture Commande sur DANFA MULTUMEDIA");
             helper.setText("Vous trouverez en piece jointe votre facture en format pdf");
             helper.addAttachment("Facture" + ".pdf", new ByteArrayResource(byteArrayOutputStream.toByteArray()));
